@@ -1,27 +1,27 @@
 <template>
-  <div class="container py-5">
+    <div class="container py-5">
     <NavTabs />
     <h1 class="mt-5">
-      最新動態
+    最新動態
     </h1>
     <hr>
     <div class="row">
-      <div class="col-md-6">
-        <h3>最新餐廳</h3>
-        <NewestRestaurants :restaurants="restaurants"/>
-        <!-- 最新餐廳 NewestRestaurants -->
-      </div>
-      <div class="col-md-6">
-        <!-- 最新評論 NewestComments-->
-        <h3>最新評論</h3>
-      </div>
+    <div class="col-md-6">
+    <h3>最新餐廳</h3>
+    <NewestRestaurants :restaurants="restaurants"/>
     </div>
-  </div>
+    <div class="col-md-6">
+    <h3>最新評論</h3>
+    <NewestComments  :comments="comments"/>   
+    </div>
+    </div>
+    </div>
 </template>
 
 <script>
 import NavTabs from './../components/NavTabs'
 import NewestRestaurants from './../components/NewestRestaurants.vue'
+import NewestComments from './../components/NewestComments.vue'
 const dummyData = {
     "restaurants": [
         {
@@ -529,24 +529,26 @@ const dummyData = {
     ]
 }
 export default {
-  components: {
+    components: {
     NavTabs,
-    NewestRestaurants
-  },
-  data () {
+    NewestRestaurants,
+    NewestComments
+    },
+    data () {
     return {
-      restaurants: [],
-      comments: []
+    restaurants: [],
+    comments: []
     }
-  },
-  created () {
-    this.fetchFeeds()
-  },
-  methods: {
-    fetchFeeds () {
-      this.restaurants = dummyData.restaurants
-      this.comments = dummyData.comments
+},
+created () {
+this.fetchFeeds()
+},
+methods: {
+fetchFeeds () {
+    const {restaurants ,comments }=dummyData
+    this.restaurants = restaurants
+    this.comments = comments.filter(comment => comment.Restaurant && comment.text)
     }
-  }
+    }
 }
 </script>
