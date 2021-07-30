@@ -72,6 +72,7 @@
   </div>
 </template>
 <script>
+import { addFavoriteMethod ,deleteFavoriteMethod ,addLikeMethod ,deleteLikeMethod } from './../utils/mixins'
 export default {
   name:"RestaurantDetail",
   props: {
@@ -85,32 +86,6 @@ export default {
       restaurant: this.initialRestaurant
     }
   },
-  methods: {
-    addFavorite () {
-      this.restaurant = {
-        ...this.restaurant, 
-        isFavorited: true
-      }
-    },
-    deleteFavorite () {
-      this.restaurant = {
-        ...this.restaurant, 
-        isFavorited: false
-      }
-    },
-    addLike () {
-      this.restaurant = {
-        ...this.restaurant,
-        isLiked: true
-      }
-    },
-    deleteLike () {
-      this.restaurant = {
-        ...this.restaurant,
-        isLiked: false
-      }
-    }
-  }
-  
+  mixins: [addFavoriteMethod ,deleteFavoriteMethod ,addLikeMethod ,deleteLikeMethod ]
 }
 </script>
