@@ -73,6 +73,7 @@
 </template>
 <script>
 export default {
+  name:"RestaurantDetail",
   props: {
     initialRestaurant: {
       type: Object,
