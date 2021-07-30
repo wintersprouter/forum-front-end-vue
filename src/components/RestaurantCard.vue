@@ -21,24 +21,32 @@
       </div>
       <div class="card-footer">
         <button
+          v-if = "restaurant.isFavorited"
+          @click.stop.prevent="deleteFavorite"
           type="button"
           class="btn btn-danger btn-border favorite mr-2"
         >
           移除最愛
         </button>
         <button
+          v-else
+          @click.stop.prevent="addFavorite"
           type="button"
           class="btn btn-primary btn-border favorite mr-2"
         >
           加到最愛
         </button>
         <button
+          v-if = "restaurant.isLiked"
+          @click.stop.prevent="deleteLike"
           type="button"
           class="btn btn-danger like mr-2"
         >
           Unlike
         </button>
         <button
+          v-else
+          @click.stop.prevent="addLike"
           type="button"
           class="btn btn-primary like mr-2"
         >
@@ -60,6 +68,32 @@ export default {
   data () {
     return {
       restaurant: this.initialRestaurant
+    }
+  },
+  methods: {
+    addFavorite () {
+      this.restaurant = {
+        ...this.restaurant, // 保留餐廳內原有資料
+        isFavorited: true
+      }
+    },
+    deleteFavorite () {
+      this.restaurant = {
+        ...this.restaurant, // 保留餐廳內原有資料
+        isFavorited: false
+      }
+    },
+    addLike () {
+      this.restaurant = {
+        ...this.restaurant,
+        isLiked: true
+      }
+    },
+    deleteLike () {
+      this.restaurant = {
+        ...this.restaurant,
+        isLiked: false
+      }
     }
   }
 }
