@@ -13,7 +13,8 @@
             <UserFollowersCard/>
           </div>
           <div class="col-md-8">
-            <UserCommentsCard/>
+            <UserCommentsCard
+            :comments="comments"/>
             <br>
             <UserFavoritedRestaurantsCard/>
           </div>
