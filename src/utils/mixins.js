@@ -12,33 +12,33 @@ export const addFavoriteMethod = {
   methods: {
     addFavorite () {
       this.restaurant = {
-        ...this.restaurant, 
+        ...this.restaurant,
         isFavorited: true
       }
     }
-  }  
+  }
 }
-export const deleteFavoriteMethod  = {
+export const deleteFavoriteMethod = {
   methods: {
     deleteFavorite () {
       this.restaurant = {
-        ...this.restaurant, 
+        ...this.restaurant,
         isFavorited: false
       }
-    },
-  }  
+    }
+  }
 }
-export const addLikeMethod  = {
+export const addLikeMethod = {
   methods: {
     addLike () {
       this.restaurant = {
         ...this.restaurant,
         isLiked: true
       }
-    },
-  }  
+    }
+  }
 }
-export const deleteLikeMethod  = {
+export const deleteLikeMethod = {
   methods: {
     deleteLike () {
       this.restaurant = {
@@ -46,7 +46,7 @@ export const deleteLikeMethod  = {
         isLiked: false
       }
     }
-  }  
+  }
 }
 export const emptyImageFilter = {
   filters: {

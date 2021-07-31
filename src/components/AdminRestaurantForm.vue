@@ -157,8 +157,29 @@ export default {
       }
     }
   },
+  props: {
+    initialRestaurant: {
+      type: Object,
+      // 要為物件或陣列類型的資料設定預設值時，需要使用 () => ({}) 的寫法來回傳物件
+      default: () => ({
+        name: '',
+        categoryId: '',
+        tel: '',
+        address: '',
+        description: '',
+        image: '',
+        openingHours: '',
+      })
+    }
+  },
   created () {
     this.fetchCategories()
+    this.restaurant = {
+      //使用預設值(空白表單)
+      ...this.restaurant,
+      //父層傳來的資料
+      ...this.initialRestaurant
+    }
   },
   methods: {
     fetchCategories () {

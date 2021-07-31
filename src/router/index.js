@@ -64,18 +64,23 @@ const routes = [
   },
   {
     path: '/admin',
-    exact: true,//完全匹配到才會進來
+    exact: true, // 完全匹配到才會進來
     redirect: '/admin/restaurants'
   },
   {
     path: '/admin/restaurants',
     name: 'admin-restaurants',
-    component: () => import('../views/AdminRestaurants.vue'),
+    component: () => import('../views/AdminRestaurants.vue')
   },
   {
     path: '/admin/restaurants/new',
     name: 'admin-restaurant-new',
-    component: () => import('../views/AdminRestaurantNew.vue'),
+    component: () => import('../views/AdminRestaurantNew.vue')
+  },
+  {
+    path: '/admin/restaurants/:id/edit',
+    name: 'admin-restaurant-edit',
+    component: () => import('../views/AdminRestaurantEdit.vue')
   },
   {
     path: '/admin/restaurants/:id',
