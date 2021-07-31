@@ -16,7 +16,8 @@
             <UserCommentsCard
             :comments="comments"/>
             <br>
-            <UserFavoritedRestaurantsCard/>
+            <UserFavoritedRestaurantsCard
+            :favoritedRestaurants="favoritedRestaurants"/>
           </div>
         </div>
       </div>
