@@ -8,7 +8,8 @@
         :is-current-user="isCurrentUser"/>
         <div class="row">
           <div class="col-md-4">
-            <UserFollowingsCard/>
+            <UserFollowingsCard
+            :followings="followings"/>
             <br>
             <UserFollowersCard
             :followers="followers"/>
