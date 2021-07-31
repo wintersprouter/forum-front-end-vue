@@ -66,7 +66,7 @@ export default {
       }
     },
     handleAfterSubmit (formData) {
-      // 透過 API 將表單資料送到伺服器
+      // TODO 透過 API 將表單資料送到伺服器
       for (let [name, value] of formData.entries()) {
         console.log(name + ': ' + value)
       }

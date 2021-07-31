@@ -1,13 +1,14 @@
 <template>
   <div class="col-3">
-    <a href="#">
+    <router-link
+    :to="{ name: 'user', params: { id: user.id }}">
         <img
         :src="user.image"
         :alt="user.name"
         width="140px"
         height="140px"
         >
-    </a>
+    </router-link>
     <h2>{{user.name}}</h2>
     <span class="badge rounded-pill bg-secondary">追蹤人數：{{
         user.FollowerCount}}</span>
