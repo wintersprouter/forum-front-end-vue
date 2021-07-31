@@ -63,6 +63,16 @@ const routes = [
     component: () => import('../views/UserEdit.vue')
   },
   {
+    path: '/admin',
+    exact: true,//完全匹配到才會進來
+    redirect: '/admin/restaurants'
+  },
+  {
+    path: '/admin/restaurants',
+    name: 'admin-restaurants',
+    component: () => import('../views/AdminRestaurants.vue')
+  },
+  {
     path: '*',
     name: 'not-found',
     component: NotFound
