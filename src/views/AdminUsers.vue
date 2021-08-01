@@ -36,6 +36,7 @@
               v-if="user.isAdmin"
               type="button"
               class="btn btn-link"
+              @click.stop.prevent="toggleIsAdmin(user.id)"
             >
               set as user
             </button>
@@ -43,6 +44,7 @@
               v-if="!user.isAdmin"
               type="button"
               class="btn btn-link"
+              @click.stop.prevent="toggleIsAdmin(user.id)"
             >
               set as Admin
             </button>
@@ -126,6 +128,17 @@ export default {
   methods: {
     fetchUsers () {
       this.users = dummyData.users 
+    },
+    toggleIsAdmin(userId) {
+      this.users = this.users.map(user => {
+        if (user.id === userId) {
+          return {
+            ...user,
+            isAdmin:!user.isAdmin
+          }
+        }
+        return user
+      })
     }
   }
 
