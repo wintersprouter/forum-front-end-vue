@@ -30,23 +30,15 @@
           {{user.id}}
           </th>
           <td>{{user.email}}</td>
-          <td>{{user.isAdmin?'admin':'user'}}</td>
+          <td>{{user.isAdmin ? 'admin' : 'user'}}</td>
           <td>
             <button
-              v-if="user.isAdmin"
+              v-if="currentUser.id !== user.id"
               type="button"
               class="btn btn-link"
-              @click.stop.prevent="toggleIsAdmin(user.id)"
+              @click.stop.prevent="toggleIsAdmin({userId:user.id})"
             >
-              set as user
-            </button>
-            <button
-              v-if="!user.isAdmin"
-              type="button"
-              class="btn btn-link"
-              @click.stop.prevent="toggleIsAdmin(user.id)"
-            >
-              set as Admin
+              {{ user.isAdmin ? 'set as user' : 'set as admin' }}
             </button>
           </td>
         </tr>
@@ -112,6 +104,16 @@ const dummyData = {
         }
     ]
 }
+const dummyUser = {
+  currentUser: {
+    id: 1,
+    name: '管理者',
+    email: 'root@example.com',
+    image: 'https://i.pravatar.cc/300',
+    isAdmin: true
+  },
+  isAuthenticated: true
+}
 export default {
   name:"AdminUsers",
   components: {
@@ -119,17 +121,22 @@ export default {
   },
   data () {
     return {
-      users:[]
+      users:[],
+      currentUser:{}
     }
   },
   created () {
     this.fetchUsers()
+    this.fetchCurrentUser()
   },
   methods: {
     fetchUsers () {
       this.users = dummyData.users 
     },
-    toggleIsAdmin(userId) {
+    fetchCurrentUser () {
+      this.currentUser = dummyUser.currentUser  
+    },
+    toggleIsAdmin({userId}) {
       this.users = this.users.map(user => {
         if (user.id === userId) {
           return {
