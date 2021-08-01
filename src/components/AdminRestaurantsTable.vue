@@ -1,5 +1,5 @@
 <template>
-  <table class="table">
+    <table class="table">
     <thead class="thead-dark">
       <tr>
         <th scope="col">
@@ -30,19 +30,19 @@
         <td>{{ restaurant.Category ? restaurant.Category.name : '未分類' }}</td>
         <td>{{ restaurant.name }}</td>
         <td class="d-flex justify-content-between">
-          <a
-            href="#"
+          <router-link
+            :to="{ name: 'admin-restaurant', params: { id: restaurant.id } }"
             class="btn btn-link"
-          >Show</a>
-
-          <a
-            href="#"
+          >Show</router-link>
+          <router-link
+            :to="{ name: 'admin-restaurant-edit', params: { id: restaurant.id } }"
             class="btn btn-link"
-          >Edit</a>
+          >Edit</router-link>
 
           <button
             type="button"
             class="btn btn-link"
+            @click.stop.prevent="deletehRestaurants (restaurant.id)"
           >
             Delete
           </button>
@@ -1021,6 +1021,11 @@ export default {
   methods: {
     fetchRestaurants () {
       this.restaurants = dummyData.restaurants
+    },
+    deletehRestaurants (restaurantId) {
+      this.restaurants = this.restaurants.filter(
+        restaurant => restaurant.id !== restaurantId
+      )
     }
   }
 }
