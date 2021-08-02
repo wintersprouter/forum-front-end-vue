@@ -1,23 +1,22 @@
 <template>
   <div class="container py-5">
     <NavTabs />
-    <h1 class="mt-5">
-      首頁 - 餐廳列表
-    </h1>
+    <h1 class="mt-5">首頁 - 餐廳列表</h1>
     <!-- 餐廳類別標籤 RestaurantsNavPills -->
-    <RestaurantsNavPills
-    :categories = "categories"/>
+    <RestaurantsNavPills :categories="categories" />
 
     <div class="row">
       <!-- 餐廳卡片 RestaurantCard-->
       <RestaurantCard
-      v-for ="restaurant in restaurants"
-      :key ="restaurant.id"
-      :initial-restaurant = "restaurant"/>
+        v-for="restaurant in restaurants"
+        :key="restaurant.id"
+        :initial-restaurant="restaurant"
+      />
     </div>
 
     <!-- 分頁標籤 RestaurantPagination -->
     <RestaurantsPagination
+      v-if="totalPage.length > 1"
       :current-page="currentPage"
       :total-page="totalPage"
       :category-id="categoryId"
@@ -32,320 +31,80 @@ import NavTabs from './../components/NavTabs'
 import RestaurantCard from './../components/RestaurantCard.vue'
 import RestaurantsNavPills from './../components/RestaurantsNavPills.vue'
 import RestaurantsPagination from './../components/RestaurantsPagination.vue'
-
-const dummyData = 
-  {
-    "restaurants": [
-        {
-            "id": 1,
-            "name": "Jazmyn Quitzon",
-            "tel": "(017) 135-4543",
-            "address": "5876 Macejkovic Ford",
-            "opening_hours": "08:00",
-            "description": "Amet earum voluptatem dolorum.",
-            "image": "https://loremflickr.com/320/240/restaurant,food/?random=9.923349451179542",
-            "viewCounts": 15,
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-29T06:14:08.000Z",
-            "CategoryId": 4,
-            "Category": {
-                "id": 4,
-                "name": "墨西哥料理",
-                "createdAt": "2021-07-05T09:58:39.000Z",
-                "updatedAt": "2021-07-05T09:58:39.000Z"
-            },
-            "isFavorited": false,
-            "isLiked": false
-        },
-        {
-            "id": 2,
-            "name": "Dudley Jast",
-            "tel": "(241) 684-4461 x13070",
-            "address": "001 Allen Road",
-            "opening_hours": "08:00",
-            "description": "Voluptatibus quisquam voluptatum aut nemo non volu",
-            "image": "https://loremflickr.com/320/240/restaurant,food/?random=35.43038308274238",
-            "viewCounts": 4,
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-29T13:11:41.000Z",
-            "CategoryId": 4,
-            "Category": {
-                "id": 4,
-                "name": "墨西哥料理",
-                "createdAt": "2021-07-05T09:58:39.000Z",
-                "updatedAt": "2021-07-05T09:58:39.000Z"
-            },
-            "isFavorited": false,
-            "isLiked": true
-        },
-        {
-            "id": 3,
-            "name": "Miss Marques Rice",
-            "tel": "1-737-501-7850",
-            "address": "56898 Chasity Union",
-            "opening_hours": "08:00",
-            "description": "Maxime nihil itaque nam eligendi. Assumenda debiti",
-            "image": "https://loremflickr.com/320/240/restaurant,food/?random=15.482827918913088",
-            "viewCounts": 5,
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-10T10:20:39.000Z",
-            "CategoryId": 2,
-            "Category": {
-                "id": 2,
-                "name": "日本料理",
-                "createdAt": "2021-07-05T09:58:39.000Z",
-                "updatedAt": "2021-07-05T09:58:39.000Z"
-            },
-            "isFavorited": false,
-            "isLiked": true
-        },
-        {
-            "id": 4,
-            "name": "Mckayla Hintz",
-            "tel": "1-240-532-2429",
-            "address": "167 Rogahn Mission",
-            "opening_hours": "08:00",
-            "description": "Impedit nesciunt ad id delectus magnam aspernatur ",
-            "image": "https://loremflickr.com/320/240/restaurant,food/?random=42.58020446504014",
-            "viewCounts": 1,
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T17:10:00.000Z",
-            "CategoryId": 3,
-            "Category": {
-                "id": 3,
-                "name": "義大利料理",
-                "createdAt": "2021-07-05T09:58:39.000Z",
-                "updatedAt": "2021-07-05T09:58:39.000Z"
-            },
-            "isFavorited": false,
-            "isLiked": false
-        },
-        {
-            "id": 5,
-            "name": "Salma Johnson",
-            "tel": "866.855.4905",
-            "address": "4722 Lionel Trafficway",
-            "opening_hours": "08:00",
-            "description": "Mollitia sit recusandae reiciendis voluptatibus co",
-            "image": "https://loremflickr.com/320/240/restaurant,food/?random=76.09006422711376",
-            "viewCounts": 0,
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T09:58:39.000Z",
-            "CategoryId": 1,
-            "Category": {
-                "id": 1,
-                "name": "中式料理",
-                "createdAt": "2021-07-05T09:58:39.000Z",
-                "updatedAt": "2021-07-05T09:58:39.000Z"
-            },
-            "isFavorited": false,
-            "isLiked": false
-        },
-        {
-            "id": 6,
-            "name": "Pearl Frami Sr.",
-            "tel": "130-124-3685 x9054",
-            "address": "021 Runte Brook",
-            "opening_hours": "08:00",
-            "description": "Expedita illum perspiciatis natus ea quo laudantiu",
-            "image": "https://loremflickr.com/320/240/restaurant,food/?random=12.190112895855831",
-            "viewCounts": 1,
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-06T16:06:25.000Z",
-            "CategoryId": 3,
-            "Category": {
-                "id": 3,
-                "name": "義大利料理",
-                "createdAt": "2021-07-05T09:58:39.000Z",
-                "updatedAt": "2021-07-05T09:58:39.000Z"
-            },
-            "isFavorited": false,
-            "isLiked": false
-        },
-        {
-            "id": 7,
-            "name": "Lane Rolfson",
-            "tel": "(540) 110-2896",
-            "address": "619 Alex Run",
-            "opening_hours": "08:00",
-            "description": "Repellat eaque fugiat rerum non quaerat. In vel ab",
-            "image": "https://loremflickr.com/320/240/restaurant,food/?random=26.38207413310656",
-            "viewCounts": 1,
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-29T06:05:46.000Z",
-            "CategoryId": 3,
-            "Category": {
-                "id": 3,
-                "name": "義大利料理",
-                "createdAt": "2021-07-05T09:58:39.000Z",
-                "updatedAt": "2021-07-05T09:58:39.000Z"
-            },
-            "isFavorited": false,
-            "isLiked": false
-        },
-        {
-            "id": 8,
-            "name": "Kariane West",
-            "tel": "1-392-349-4577 x62194",
-            "address": "576 Kris Parkways",
-            "opening_hours": "08:00",
-            "description": "quo",
-            "image": "https://loremflickr.com/320/240/restaurant,food/?random=59.761591350585455",
-            "viewCounts": 0,
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T09:58:39.000Z",
-            "CategoryId": 4,
-            "Category": {
-                "id": 4,
-                "name": "墨西哥料理",
-                "createdAt": "2021-07-05T09:58:39.000Z",
-                "updatedAt": "2021-07-05T09:58:39.000Z"
-            },
-            "isFavorited": false,
-            "isLiked": false
-        },
-        {
-            "id": 9,
-            "name": "Roman Kunde",
-            "tel": "(051) 925-0555 x1731",
-            "address": "131 Hoyt Mission",
-            "opening_hours": "08:00",
-            "description": "Et dolorum voluptas.\nSint eveniet ratione id praes",
-            "image": "https://loremflickr.com/320/240/restaurant,food/?random=55.144782599599694",
-            "viewCounts": 0,
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T09:58:39.000Z",
-            "CategoryId": 2,
-            "Category": {
-                "id": 2,
-                "name": "日本料理",
-                "createdAt": "2021-07-05T09:58:39.000Z",
-                "updatedAt": "2021-07-05T09:58:39.000Z"
-            },
-            "isFavorited": false,
-            "isLiked": false
-        },
-        {
-            "id": 10,
-            "name": "Iva Dickinson Jr.",
-            "tel": "757.545.3970",
-            "address": "575 Clementine Neck",
-            "opening_hours": "08:00",
-            "description": "Consequuntur nam corporis adipisci. Voluptate vero",
-            "image": "https://loremflickr.com/320/240/restaurant,food/?random=63.73718248364722",
-            "viewCounts": 0,
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T09:58:39.000Z",
-            "CategoryId": 1,
-            "Category": {
-                "id": 1,
-                "name": "中式料理",
-                "createdAt": "2021-07-05T09:58:39.000Z",
-                "updatedAt": "2021-07-05T09:58:39.000Z"
-            },
-            "isFavorited": false,
-            "isLiked": false
-        }
-    ],
-    "categories": [
-        {
-            "id": 1,
-            "name": "中式料理",
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T09:58:39.000Z"
-        },
-        {
-            "id": 2,
-            "name": "日本料理",
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T09:58:39.000Z"
-        },
-        {
-            "id": 3,
-            "name": "義大利料理",
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T09:58:39.000Z"
-        },
-        {
-            "id": 4,
-            "name": "墨西哥料理",
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T09:58:39.000Z"
-        },
-        {
-            "id": 5,
-            "name": "素食料理",
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T09:58:39.000Z"
-        },
-        {
-            "id": 6,
-            "name": "美式料理",
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T09:58:39.000Z"
-        },
-        {
-            "id": 7,
-            "name": "複合式料理",
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T09:58:39.000Z"
-        }
-    ],
-    "categoryId": "",
-    "page": 1,
-    "totalPage": [
-        1,
-        2,
-        3,
-        4,
-        5
-    ],
-    "prev": 1,
-    "next": 2
-}
+// STEP 1：透過 import 匯入剛剛撰寫好用來呼叫 API 的方法
+import restaurantsAPI from './../apis/restaurants'
+import { Toast } from './../utils/helpers'
 
 export default {
-  name:'Restaurants',
+  name: 'Restaurants',
   components: {
     NavTabs,
     RestaurantCard,
     RestaurantsNavPills,
     RestaurantsPagination
   },
-  data () {
+  data() {
     return {
       restaurants: [],
       categories: [],
       categoryId: -1,
       currentPage: 1,
       totalPage: [],
-      previousPage: -1,//-1 代表現在還沒拿到資料，而不是說真的打算用 -1 去運算邏輯，之後一定用其他的值把 -1 覆蓋掉
+      previousPage: -1, //-1 代表現在還沒拿到資料，而不是說真的打算用 -1 去運算邏輯，之後一定用其他的值把 -1 覆蓋掉
       nextPage: -1
-
     }
   },
-  created(){
-    this.fetchRestaurants()
+  created() {
+    const { page = '', categoryId = '' } = this.$route.query
+    this.fetchRestaurants({ queryPage: page, queryCategoryId: categoryId })
+  },
+  // 使用 beforeRouteUpdate 方法取得使用者路由變化
+  // to - 使用者將要前往的路由
+  // from - 使用者來自哪個路由
+  // next - 表示繼續往
+  beforeRouteUpdate(to, from, next) {
+    const { page = '', categoryId = '' } = to.query
+    this.fetchRestaurants({ queryPage: page, queryCategoryId: categoryId })
+    next()
   },
   methods: {
-    fetchRestaurants () {
-      const {
-        restaurants,
-        categories,
-        categoryId,
-        page,
-        totalPage,
-        prev,
-        next
-      } = dummyData
-      this.restaurants = restaurants
-      this.categories = categories
-      this.categoryId = categoryId
-      this.currentPage = page
-      this.totalPage = totalPage
-      this.previousPage = prev
-      this.nextPage = next
+    // STEP 2：將 fetchRestaurants 改成 async...await 的語法
+    // 並且可以帶入參數 page 與 categoryId
+    // 呼叫 API 後取得 response
+    async fetchRestaurants({ queryPage, queryCategoryId }) {
+      try {
+        const response = await restaurantsAPI.getRestaurants({
+          page: queryPage,
+          categoryId: queryCategoryId
+        })
+
+        // STEP 2：透過解構賦值，將所需要的資料從 response.data 取出
+        const {
+          restaurants,
+          categories,
+          categoryId,
+          page,
+          totalPage,
+          prev,
+          next
+        } = response.data
+
+        // STEP 3：將從伺服器取得的 data 帶入 Vue 內
+        this.restaurants = restaurants
+        this.categories = categories
+        this.categoryId = categoryId
+        this.currentPage = page
+        this.totalPage = totalPage
+        this.previousPage = prev
+        this.nextPage = next
+      } catch (error) {
+        Toast.fire({
+          icon: 'error',
+          title: '無法取得餐廳資料，請稍後再試'
+        })
+        console.log('error', error)
+      }
     }
-  }  
+  }
 }
 </script>

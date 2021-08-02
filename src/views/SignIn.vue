@@ -19,7 +19,7 @@
           autocomplete="username"
           required
           autofocus
-        >
+        />
       </div>
 
       <div class="form-label-group mb-3">
@@ -33,12 +33,13 @@
           placeholder="Password"
           autocomplete="current-password"
           required
-        >
+        />
       </div>
 
       <button
         class="btn btn-lg btn-primary btn-block mb-3"
         type="submit"
+        :disabled="isProcessing"
       >
         Submit
       </button>
@@ -46,8 +47,8 @@
       <div class="text-center mb-3">
         <p>
           <router-link to="/signup">
-          Sign Up
-        </router-link>
+            Sign Up
+          </router-link>
         </p>
       </div>
 
@@ -58,22 +59,57 @@
   </div>
 </template>
 <script>
+import authorizationAPI from './../apis/authorization'
+import { Toast } from './../utils/helpers'
+
 export default {
   data(){
     return {
       email: '',
-      password: ''
+      password: '',
+      isProcessing: false
     }
   },
   methods: {
-    handleSubmit () {
-      const data = JSON.stringify({
-        email: this.email,
-        password: this.password
-      })
+    async handleSubmit () {
+      try {
+        // 如果 email 或 password 為空，則使用 Toast 提示
+        // 然後 return 不繼續往後執行
+        if (!this.email || !this.password) {
+          Toast.fire({
+            icon: 'warning',
+            title: '請填入帳號密碼'
+          })
+          return
+        }
+        this.isProcessing = true
+        const response = await authorizationAPI.signIn({
+          email: this.email,
+          password: this.password
+        })
+        // 取得 API 請求後的資料
+        const { data } = response
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
 
-      // TODO: 向後端驗證使用者登入資訊是否合法
-      console.log('data', data)
+        // 將 token 存放在 localStorage 內
+        localStorage.setItem('token', data.token)
+
+        // 成功登入後轉址到餐廳首頁
+        this.$router.push('/restaurants')
+        Toast.fire({ icon: 'success', title:`Hi ${data.user.name} 歡迎回來` })
+      } catch (error) {
+        // 將密碼欄位清空
+        this.password = ''
+        // 顯示錯誤提示
+        Toast.fire({
+          icon: 'warning',
+          title: '請確認您輸入了正確的帳號密碼'
+        })
+        this.isProcessing = false
+        console.log('error', error)
+      }
     }
   }
 }
