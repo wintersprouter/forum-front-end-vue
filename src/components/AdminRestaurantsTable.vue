@@ -46,6 +46,7 @@
 <script>
 import adminAPI from './../apis/admin'
 import { Toast } from './../utils/helpers'
+import Swal from 'sweetalert2'
 
 export default {
   data() {
@@ -66,10 +67,32 @@ export default {
         console.log('error', error)
       }
     },
-    deletehRestaurants(restaurantId) {
-      this.restaurants = this.restaurants.filter(
-        (restaurant) => restaurant.id !== restaurantId
-      )
+    async deletehRestaurants(restaurantId) {
+      try {
+        const { data } = await adminAPI.restaurants.delete({ restaurantId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        const result = await Swal.fire({
+          title: '確定要刪除此餐廳?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        })
+
+        if (result.isConfirmed) {
+          Swal.fire('Deleted!', '成功刪除此餐廳', 'success')
+        }
+
+        this.restaurants = this.restaurants.filter(
+          (restaurant) => restaurant.id !== restaurantId
+        )
+      } catch (error) {
+        Toast.fire({ icon: 'error', title: '無法刪除餐廳，請稍後再試' })
+        console.log('error', error)
+      }
     }
   }
 }
