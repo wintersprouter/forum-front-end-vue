@@ -19,7 +19,7 @@
           autocomplete="username"
           required
           autofocus
-        >
+        />
       </div>
 
       <div class="form-label-group mb-3">
@@ -33,7 +33,7 @@
           placeholder="Password"
           autocomplete="current-password"
           required
-        >
+        />
       </div>
 
       <button
@@ -47,8 +47,8 @@
       <div class="text-center mb-3">
         <p>
           <router-link to="/signup">
-          Sign Up
-        </router-link>
+            Sign Up
+          </router-link>
         </p>
       </div>
 
@@ -82,6 +82,7 @@ export default {
           })
           return
         }
+        this.isProcessing = true
         const response = await authorizationAPI.signIn({
           email: this.email,
           password: this.password
@@ -91,12 +92,13 @@ export default {
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
+
         // 將 token 存放在 localStorage 內
         localStorage.setItem('token', data.token)
 
         // 成功登入後轉址到餐廳首頁
         this.$router.push('/restaurants')
-
+        Toast.fire({ icon: 'success', title:`Hi ${data.user.name} 歡迎回來` })
       } catch (error) {
         // 將密碼欄位清空
         this.password = ''
@@ -107,7 +109,6 @@ export default {
         })
         this.isProcessing = false
         console.log('error', error)
-        
       }
     }
   }
