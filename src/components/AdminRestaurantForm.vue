@@ -141,6 +141,12 @@ export default {
     },
     isProcessing: { type: Boolean, default: false }
   },
+  watch: {
+    initialRestaurant(newValue) {
+      this.restaurant = { ...this.restaurant, ...newValue }
+    }
+  },
+
   created() {
     this.fetchCategories()
     this.restaurant = {
