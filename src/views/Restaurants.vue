@@ -1,19 +1,17 @@
 <template>
   <div class="container py-5">
     <NavTabs />
-    <h1 class="mt-5">
-      首頁 - 餐廳列表
-    </h1>
+    <h1 class="mt-5">首頁 - 餐廳列表</h1>
     <!-- 餐廳類別標籤 RestaurantsNavPills -->
-    <RestaurantsNavPills
-    :categories = "categories"/>
+    <RestaurantsNavPills :categories="categories" />
 
     <div class="row">
       <!-- 餐廳卡片 RestaurantCard-->
       <RestaurantCard
-      v-for ="restaurant in restaurants"
-      :key ="restaurant.id"
-      :initial-restaurant = "restaurant"/>
+        v-for="restaurant in restaurants"
+        :key="restaurant.id"
+        :initial-restaurant="restaurant"
+      />
     </div>
 
     <!-- 分頁標籤 RestaurantPagination -->
@@ -38,26 +36,25 @@ import restaurantsAPI from './../apis/restaurants'
 import { Toast } from './../utils/helpers'
 
 export default {
-  name:'Restaurants',
+  name: 'Restaurants',
   components: {
     NavTabs,
     RestaurantCard,
     RestaurantsNavPills,
     RestaurantsPagination
   },
-  data () {
+  data() {
     return {
       restaurants: [],
       categories: [],
       categoryId: -1,
       currentPage: 1,
       totalPage: [],
-      previousPage: -1,//-1 代表現在還沒拿到資料，而不是說真的打算用 -1 去運算邏輯，之後一定用其他的值把 -1 覆蓋掉
+      previousPage: -1, //-1 代表現在還沒拿到資料，而不是說真的打算用 -1 去運算邏輯，之後一定用其他的值把 -1 覆蓋掉
       nextPage: -1
-
     }
   },
-  created () {
+  created() {
     const { page = '', categoryId = '' } = this.$route.query
     this.fetchRestaurants({ queryPage: page, queryCategoryId: categoryId })
   },
@@ -65,8 +62,8 @@ export default {
   // to - 使用者將要前往的路由
   // from - 使用者來自哪個路由
   // next - 表示繼續往
-  beforeRouteUpdate (to, from, next) {
-    const  { page = '', categoryId = '' } = to.query
+  beforeRouteUpdate(to, from, next) {
+    const { page = '', categoryId = '' } = to.query
     this.fetchRestaurants({ queryPage: page, queryCategoryId: categoryId })
     next()
   },
@@ -74,7 +71,7 @@ export default {
     // STEP 2：將 fetchRestaurants 改成 async...await 的語法
     // 並且可以帶入參數 page 與 categoryId
     // 呼叫 API 後取得 response
-    async fetchRestaurants ({ queryPage, queryCategoryId }) {
+    async fetchRestaurants({ queryPage, queryCategoryId }) {
       try {
         const response = await restaurantsAPI.getRestaurants({
           page: queryPage,
@@ -100,8 +97,6 @@ export default {
         this.totalPage = totalPage
         this.previousPage = prev
         this.nextPage = next
-
-
       } catch (error) {
         Toast.fire({
           icon: 'error',
@@ -110,6 +105,6 @@ export default {
         console.log('error', error)
       }
     }
-  }  
+  }
 }
 </script>
