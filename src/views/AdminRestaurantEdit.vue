@@ -47,7 +47,6 @@ export default {
     async fetchRestaurant(restaurantId) {
       try {
         const { data } = await adminAPI.restaurants.getDetail({ restaurantId })
-
         // STEP 3: 透過解構賦值將需要的資料取出
         const {
           id,
