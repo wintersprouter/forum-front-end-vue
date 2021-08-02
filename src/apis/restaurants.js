@@ -11,5 +11,10 @@ export default {
       // http header 攜帶 token
       headers: { Authorization: `Bearer ${getToken()}` }
     })
+  },
+  getTopRestaurants () {
+    return apiHelper.get('/restaurants/top', {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
   }
 }

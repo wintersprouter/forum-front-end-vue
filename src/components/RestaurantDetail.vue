@@ -8,10 +8,10 @@
     </div>
     <div class="col-lg-4">
       <img
-        class="img-responsive center-block" 
-    :src="restaurant.image"
+        class="img-responsive center-block"
+        :src="restaurant.image"
         style="width: 250px;margin-bottom: 25px;"
-      >
+      />
       <div class="contact-info-wrap">
         <ul class="list-unstyled">
           <li>
@@ -34,13 +34,14 @@
       <router-link
         class="btn btn-primary btn-border mr-2"
         :to="{ name: 'restaurant-dashboard', params: { id: restaurant.id } }"
-      >Dashboard </router-link>
+        >Dashboard
+      </router-link>
 
       <button
-        v-if = "restaurant.isFavorited"
+        v-if="restaurant.isFavorited"
         type="button"
         class="btn btn-danger btn-border mr-2"
-        @click.stop.prevent="deleteFavorite"
+        @click.stop.prevent="deleteFavorite(restaurant.id)"
       >
         移除最愛
       </button>
@@ -48,12 +49,12 @@
         v-else
         type="button"
         class="btn btn-primary btn-border mr-2"
-        @click.stop.prevent="addFavorite"
+        @click.stop.prevent="addFavorite(restaurant.id)"
       >
         加到最愛
       </button>
       <button
-        v-if = "restaurant.isLiked"
+        v-if="restaurant.isLiked"
         type="button"
         class="btn btn-danger like mr-2"
         @click.stop.prevent="deleteLike"
@@ -72,7 +73,9 @@
   </div>
 </template>
 <script>
-import { addFavoriteMethod ,deleteFavoriteMethod ,addLikeMethod ,deleteLikeMethod } from './../utils/mixins'
+import { Toast } from'./../utils/helpers'
+import usersAPI from './../apis/users'
+
 export default {
   name:"RestaurantDetail",
   props: {
@@ -86,6 +89,34 @@ export default {
       restaurant: this.initialRestaurant
     }
   },
-  mixins: [addFavoriteMethod ,deleteFavoriteMethod ,addLikeMethod ,deleteLikeMethod ]
+  methods: {
+    async addFavorite(restaurantId) {
+      try {
+        const { data } = await usersAPI.addFavorite({restaurantId})
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.restaurant = { ...this.restaurant, isFavorited: true }
+        Toast.fire({ icon: 'success', title:`成功將${this.restaurant.name} 加入最愛` })
+      } catch (error) {
+        Toast.fire({ icon: 'error', title:`無法將  ${this.restaurant.name} 加入最愛，請稍後再試` })
+        console.log('error', error)
+      }
+    },
+    async deleteFavorite (restaurantId) {
+      try {
+        const { data } = await usersAPI.deleteFavorite({ restaurantId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.restaurant = { ...this.restaurant, isFavorited: false }
+        Toast.fire({ icon: 'success', title:`成功將 ${this.restaurant.name} 移除最愛`})
+      } catch (error) {
+        Toast.fire({ icon: 'error', title:`無法將 ${this.restaurant.name} 移除最愛，請稍後再試` })
+
+        console.log('error', error)
+      }
+    },
+  }
 }
 </script>
