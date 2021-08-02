@@ -92,10 +92,10 @@ export default {
         }
         // STEP 5: 請求成功的話，改變 Vue 內的資料狀態
         this.restaurant = { ...this.restaurant, isFavorited: true }
-        Toast.fire({ icon: 'success', title:'成功將此餐廳加入最愛' })
+        Toast.fire({ icon: 'success', title:`成功將${this.restaurant.name} 加入最愛` })
       } catch (error) {
         //STEP 6: 請求失敗的話則跳出錯誤提示
-        Toast.fire({ icon: 'error', title:'無法將餐廳加入最愛，請稍後再試' })
+        Toast.fire({ icon: 'error', title:`無法將  ${this.restaurant.name} 加入最愛，請稍後再試` })
         console.log('error', error)
       }
     },
@@ -106,9 +106,10 @@ export default {
           throw new Error(data.message)
         }
         this.restaurant = { ...this.restaurant, isFavorited: false }
-        Toast.fire({ icon: 'success', title:'成功將此餐廳移除最愛' })
+        Toast.fire({ icon: 'success', title:`成功將 ${this.restaurant.name} 移除最愛`})
       } catch (error) {
-        Toast.fire({ icon: 'error', title:'無法將餐廳移除最愛，請稍後再試' })
+        Toast.fire({ icon: 'error', title:`無法將 ${this.restaurant.name} 移除最愛，請稍後再試` })
+
         console.log('error', error)
       }
     },
@@ -119,9 +120,9 @@ export default {
           throw new Error(data.message)
         }
         this.restaurant = { ...this.restaurant, isLiked: true }
-        Toast.fire({ icon: 'success', title:'成功 Like 此餐廳' })
+        Toast.fire({ icon: 'success', title:`成功對 ${this.restaurant.name} 點讚` })
       } catch (error) {
-        Toast.fire({ icon: 'error', title:'無法對此餐廳點Like，請稍後再試' })
+        Toast.fire({ icon: 'error', title:`無法對 ${this.restaurant.name} 點讚，請稍後再試` })
         console.log('error', error)
       }
     },
@@ -132,9 +133,9 @@ export default {
           throw new Error(data.message)
         }
         this.restaurant = { ...this.restaurant, isLiked: false }
-        Toast.fire({ icon: 'success', title:'成功取消對此餐廳的 Like' })
+        Toast.fire({ icon: 'success', title:`成功收回對 ${this.restaurant.name} 的讚` })
       } catch (error) {
-        Toast.fire({ icon: 'error', title:'無法對此餐廳取消Like，請稍後再試' })
+        Toast.fire({ icon: 'error', title:`無法收回對 ${this.restaurant.name} 的讚，請稍後再試`})
         console.log('error', error)
       }
     },
