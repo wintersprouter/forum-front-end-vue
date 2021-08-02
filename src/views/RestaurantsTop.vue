@@ -36,17 +36,14 @@ export default {
   },
   methods: {
     async fetchTopRestaurants() {
-        try {
-            const {data} = await restaurantsAPI.getTopRestaurants()
-            console.log('data',data)
-
-            const { restaurants } = data
-            this.restaurants = restaurants
-        } catch (error) {
-            Toast.fire({ icon: 'error', title: '無法取得餐廳資料，請稍後再試' })
-            console.log('error', error)
-        }
-
+      try {
+        const { data }  = await restaurantsAPI.getTopRestaurants()
+        const { restaurants } = data
+        this.restaurants = restaurants
+      } catch (error) {
+        Toast.fire({ icon: 'error', title: '無法取得餐廳資料，請稍後再試' })
+        console.log('error', error)
+      }
     }
   }
 }
