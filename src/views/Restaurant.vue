@@ -19,7 +19,7 @@
 import RestaurantDetail from './../components/RestaurantDetail.vue'
 import RestaurantComments from './../components/RestaurantComments.vue'
 import CreateComment from './../components/CreateComment.vue'
-import adminAPI from './../apis/admin'
+import restaurantsAPI from './../apis/restaurants'
 import { Toast } from './../utils/helpers'
 
 const dummyUser = {
@@ -69,7 +69,7 @@ export default {
   methods: {
     async fetchRestaurant(restaurantId) {
       try {
-        const { data } = await adminAPI.restaurants.getDetail({ restaurantId })
+        const { data } = await restaurantsAPI.getDetail({ restaurantId })
         console.log('data', data)
         const { restaurant, isFavorited, isLiked } = data
         const {
