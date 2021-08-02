@@ -14,6 +14,11 @@ export default {
       return apiHelper.post('/admin/restaurants', formData, {
         headers: { Authorization: `Bearer ${getToken()}` }
       })
+    },
+    get () {
+      return apiHelper.get('/admin/restaurants', {
+        headers: { Authorization: `Bearer ${getToken()}` }
+      })
     }
   }
 }

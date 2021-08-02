@@ -164,6 +164,7 @@ export default {
           icon: 'error',
           title: '無法取得餐廳類別，請稍後再試'
         })
+        console.log('error', error)
       }
     },
     handleFileChange(e) {
