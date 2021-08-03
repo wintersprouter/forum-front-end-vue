@@ -31,7 +31,9 @@
               v-if="currentUser.id !== user.id"
               type="button"
               class="btn btn-link"
-              @click.stop.prevent="toggleIsAdmin({ userId: user.id })"
+              @click.stop.prevent="
+                toggleIsAdmin({ userId: user.id, isAdmin: user.isAdmin })
+              "
             >
               {{ user.isAdmin ? 'set as user' : 'set as admin' }}
             </button>
@@ -69,20 +71,34 @@ export default {
         const { data } = await adminAPI.users.get()
         this.users = data.users
       } catch (error) {
-        Toast.fire({ icon: 'error', title: '無法取得餐廳資料，請稍後再試' })
+        Toast.fire({ icon: 'error', title: '無法取得使用者資料，請稍後再試' })
       }
     },
 
-    toggleIsAdmin({ userId }) {
-      this.users = this.users.map(user => {
-        if (user.id === userId) {
-          return {
-            ...user,
-            isAdmin: !user.isAdmin
-          }
+    async toggleIsAdmin({ userId, isAdmin }) {
+      try {
+        const willBeAdmin = !isAdmin
+
+        const { data } = await adminAPI.users.update({
+          userId,
+          isAdmin: willBeAdmin.toString()
+        })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
-        return user
-      })
+        this.users = this.users.map(user => {
+          if (user.id === userId) {
+            return {
+              ...user,
+              isAdmin: willBeAdmin
+            }
+          }
+          return user
+        })
+        Toast.fire({ icon: 'success', title: '成功更新使用者個人角色' })
+      } catch (error) {
+        Toast.fire({ icon: 'error', title: '無法更新使用者角色，請稍後再試' })
+      }
     }
   }
 }
