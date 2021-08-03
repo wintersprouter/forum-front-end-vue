@@ -11,18 +11,18 @@
           class="form-control"
           placeholder="Enter Name"
           required
-        >
+        />
       </div>
 
       <div class="form-group">
         <label for="image">Image</label>
         <img
-        v-if="image"
-        :src="image"
-        class="d-block img-thumbnail mb-3"
-        width="200"
-        height="200"
-        >
+          v-if="image"
+          :src="image"
+          class="d-block img-thumbnail mb-3"
+          width="200"
+          height="200"
+        />
         <input
           id="image"
           type="file"
@@ -30,13 +30,10 @@
           accept="image/*"
           class="form-control-file"
           @change="handleFileChange"
-        >
+        />
       </div>
 
-      <button
-        type="submit"
-        class="btn btn-primary"
-      >
+      <button type="submit" class="btn btn-primary">
         Submit
       </button>
     </form>
@@ -44,29 +41,51 @@
 </template>
 
 <script>
-const dummyData = {
-  id: 1,
-  name: '管理者',
-  image: 'https://i.pravatar.cc/300'
-}
+// import usersAPI from './../apis/users'
+// import { Toast } from './../utils/helpers'
+import { mapState } from 'vuex'
+
 export default {
-  data () {
+  data() {
     return {
       id: -1,
       name: '',
-      image: ''
+      image: '',
+      isProcessing: false
     }
   },
-  methods: {
-    fetchUser (userId) {
-      console.log('userId',userId)
-      const { id,name,image } = dummyData
+  computed: { ...mapState(['currentUser']) },
+  watch: {
+    currentUser(user) {
+      if (user.id === -1) return
+      const { id } = this.$route.params
+      this.setUser(id)
+    }
+  },
+  created() {
+    if (this.currentUser.id === -1) return
+    const { id } = this.$route.params
+    this.setUser(id)
+  },
+  beforeRouteUpdate(to, from, next) {
+    if (this.currentUser.id === -1) return
+    const { id } = to.params
+    this.setUser(id)
+    next()
+  },
 
+  methods: {
+    setUser(userId) {
+      const { id, image, name } = this.currentUser
+      if (id.toString() !== userId.toString()) {
+        this.$router.push({ name: 'not-found' })
+        return
+      }
       this.id = id
       this.name = name
       this.image = image
     },
-    handleFileChange (e) {
+    handleFileChange(e) {
       const { files } = e.target
       if (files.length === 0) {
         this.image = ''
@@ -76,18 +95,14 @@ export default {
         this.image = imageURL
       }
     },
-    handleSubmit (e) {
-      const form = e.target 
+    handleSubmit(e) {
+      const form = e.target
       const formData = new FormData(form)
       // TODO 透過 API 將表單資料送到伺服器
       for (let [name, value] of formData.entries()) {
         console.log(name + ': ' + value)
       }
-    }  
-  },
-  created () {
-    const { id } = this.$route.params
-    this.fetchUser(id)
+    }
   }
 }
 </script>
