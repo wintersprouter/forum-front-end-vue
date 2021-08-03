@@ -4,10 +4,7 @@
       所有評論：
     </h2>
 
-    <div 
-    v-for="comment in restaurantComments"
-    :key="comment.id"
-    >
+    <div v-for="comment in restaurantComments" :key="comment.id">
       <blockquote class="blockquote mb-0">
         <button
           type="button"
@@ -18,55 +15,50 @@
           Delete
         </button>
         <h3>
-          <router-link
-          :to="{ name: 'user', params: { id: comment.User.id } }"
-          >
-            {{comment.User.name}}
+          <router-link :to="{ name: 'user', params: { id: comment.User.id } }">
+            {{ comment.User.name }}
           </router-link>
         </h3>
-        <p>{{comment.text}}</p>
+        <p>{{ comment.text }}</p>
         <footer class="blockquote-footer">
-          {{comment.createdAt | fromNow}}
+          {{ comment.createdAt | fromNow }}
         </footer>
       </blockquote>
-      <hr>
+      <hr />
     </div>
   </div>
 </template>
 <script>
 import { fromNowFilter } from './../utils/mixins'
-
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: '管理者',
-    email: 'root@example.com',
-    image: 'https://i.pravatar.cc/300',
-    isAdmin: true
-  },
-  isAuthenticated: true
-}
+import usersAPI from './../apis/users'
+import { Toast } from './../utils/helpers'
+import { mapState } from 'vuex'
 
 export default {
-  name:"RestaurantComments",
+  name: 'RestaurantComments',
+  mixins: [fromNowFilter],
+
   props: {
     restaurantComments: {
       type: Array,
       required: true
     }
   },
-  data () {
-    return {
-      currentUser: dummyUser.currentUser
-    }
-  },
-  mixins: [fromNowFilter],
+  computed: { ...mapState(['currentUser']) },
+
   methods: {
-    handleDeleteButtonClick (commentId) {
-      console.log('handleDeleteButtonClick', commentId)
-      // TODO: 請求 API 伺服器刪除 id 為 commentId 的評論
-      // 觸發父層事件 - $emit( '事件名稱' , 傳遞的資料 )
-      this.$emit('after-delete-comment', commentId)
+    async handleDeleteButtonClick(commentId) {
+      try {
+        const { data } = await usersAPI.deleteComment({ commentId })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        // 觸發父層事件 - $emit('事件名稱' , 傳遞的資料 )
+        this.$emit('after-delete-comment', commentId)
+        Toast.fire({ icon: 'success', title: '移除評論成功' })
+      } catch (error) {
+        Toast.fire({ icon: 'error', title: '無法刪除留言，請稍後再試' })
+      }
     }
   }
 }

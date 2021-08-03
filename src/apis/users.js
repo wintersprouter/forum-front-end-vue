@@ -52,5 +52,10 @@ export default {
     return apiHelper.delete(`/following/${userId}`, {
       headers: { Authorization: `Bearer ${getToken()}` }
     })
+  },
+  deleteComment ({ commentId }) {
+    return apiHelper.delete(`/comments/${commentId}`, {
+      headers: { Authorization: `Bearer ${getToken()}` }
+    })
   }
 }
