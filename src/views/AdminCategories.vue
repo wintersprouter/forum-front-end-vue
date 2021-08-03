@@ -191,10 +191,17 @@ export default {
         return category
       })
     },
-    updateCategory({ categoryId, name }) {
-      // TODO: 透過 API 去向伺服器更新餐廳類別名稱
-      console.log('name', name)
-      this.toggleIsEditing(categoryId)
+    async updateCategory({ categoryId, name }) {
+      try {
+        const { data } = await adminAPI.categories.update({ categoryId, name })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        Toast.fire({ icon: 'success', title: '更新餐廳分類資料成功' })
+        this.toggleIsEditing(categoryId)
+      } catch (error) {
+        Toast.fire({ icon: 'error', title: '無法更新餐廳分類資料，請稍後再試' })
+      }
     },
     handleCancel(categoryId) {
       this.categories = this.categories.map(category => {
