@@ -7,6 +7,8 @@
           alt="Card image cap"
           width="300px"
           height="300px"
+          class="card-img-top
+"
         />
       </div>
       <div class="col-md-8">

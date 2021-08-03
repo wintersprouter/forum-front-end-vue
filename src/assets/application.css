@@ -12,6 +12,7 @@
 a {
   color: #bd2333;
   transition: all 0.3s ease-in-out;
+  text-decoration: none;
 }
 
 a:hover {
@@ -85,10 +86,16 @@ a:hover {
   border-color: rgba(255, 255, 255, 0.85);
   border-width: 1px;
 }
+.card-img-top {
+  object-fit: cover;
+}
 
 h1,
 .card-text {
   font-family: serif;
+}
+.nav-link {
+  color: #bd2333;
 }
 
 .badge.badge-secondary {

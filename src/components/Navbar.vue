@@ -3,7 +3,6 @@
     <router-link class="navbar-brand" to="/">
       餐廳評論網
     </router-link>
-
     <button
       class="navbar-toggler"
       type="button"
@@ -17,7 +16,7 @@
     </button>
 
     <div id="navbarSupportedContent" class="navbar-collapse collapse">
-      <div class="ml-auto d-flex align-items-center">
+      <div class=" d-flex align-items-center">
         <!-- is user is admin -->
         <router-link
           v-if="currentUser.isAdmin"
@@ -31,13 +30,13 @@
         <template v-if="isAuthenticated">
           <router-link
             :to="{ name: 'user', params: { id: currentUser.id } }"
-            class="text-white mr-3"
+            class="text-white mr-3 mx-2"
           >
             {{ currentUser.name || '使用者' }} 您好
           </router-link>
           <button
             type="button"
-            class="btn btn-sm btn-outline-success my-2 my-sm-0"
+            class="btn btn-sm btn-outline-success my-2 my-sm-0 mx-2"
             @click="logout"
           >
             登出
@@ -62,3 +61,18 @@ export default {
   }
 }
 </script>
+
+<style scoped>
+.navbar-toggler {
+  min-width: 70px;
+  margin-right: 0;
+}
+nav.bg-dark {
+  padding: 14px 16px;
+  background-color: #bd2333 !important;
+}
+.navbar-brand {
+  font-size: 19px;
+  padding: 0;
+}
+</style>

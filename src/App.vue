@@ -1,12 +1,9 @@
 <template>
   <div id="restaurant-forum">
     <Navbar />
-    <main
-      role="main"
-      class="mt-5 bg-white"
-    >
-    <!-- router-view 根據路由不同，動態渲染該路由的組件 -->
-    <router-view/>
+    <main role="main" class="mt-5 bg-white">
+      <!-- router-view 根據路由不同，動態渲染該路由的組件 -->
+      <router-view />
     </main>
   </div>
 </template>
@@ -21,3 +18,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+main {
+  margin-top: 65px !important;
+}
+</style>
