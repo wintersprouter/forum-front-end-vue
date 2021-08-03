@@ -18,7 +18,6 @@
           placeholder="email"
           autocomplete="username"
           required
-          autofocus
         />
       </div>
 
@@ -38,8 +37,8 @@
 
       <button
         class="btn btn-lg btn-primary btn-block mb-3"
-        type="submit"
         :disabled="isProcessing"
+        type="submit"
       >
         Submit
       </button>
@@ -58,12 +57,12 @@
     </form>
   </div>
 </template>
+
 <script>
 import authorizationAPI from './../apis/authorization'
 import { Toast } from './../utils/helpers'
-
 export default {
-  data(){
+  data() {
     return {
       email: '',
       password: '',
@@ -71,14 +70,12 @@ export default {
     }
   },
   methods: {
-    async handleSubmit () {
+    async handleSubmit() {
       try {
-        // 如果 email 或 password 為空，則使用 Toast 提示
-        // 然後 return 不繼續往後執行
         if (!this.email || !this.password) {
           Toast.fire({
             icon: 'warning',
-            title: '請填入帳號密碼'
+            title: '請填入 email 和 password'
           })
           return
         }
@@ -87,28 +84,25 @@ export default {
           email: this.email,
           password: this.password
         })
-        // 取得 API 請求後的資料
         const { data } = response
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
-
-        // 將 token 存放在 localStorage 內
+        // 將伺服器回傳的 token 保存在 localStorage 中
         localStorage.setItem('token', data.token)
-
-        // 成功登入後轉址到餐廳首頁
+        // 透過 setCurrentUser 把使用者資料存到 Vuex 的 state 中
+        this.$store.commit('setCurrentUser', data.user)
+        // 成功登入後進行轉址
         this.$router.push('/restaurants')
-        Toast.fire({ icon: 'success', title:`Hi ${data.user.name} 歡迎回來` })
       } catch (error) {
-        // 將密碼欄位清空
+        this.isProcessing = false
         this.password = ''
         // 顯示錯誤提示
         Toast.fire({
           icon: 'warning',
-          title: '請確認您輸入了正確的帳號密碼'
+          title: '輸入的帳號密碼有誤'
         })
-        this.isProcessing = false
-        console.log('error', error)
+        console.error(error.message)
       }
     }
   }
