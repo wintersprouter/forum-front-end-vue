@@ -29,7 +29,6 @@
             class="btn btn-link"
             >Edit</router-link
           >
-
           <button
             type="button"
             class="btn btn-link"
@@ -69,10 +68,6 @@ export default {
     },
     async deletehRestaurants(restaurantId) {
       try {
-        const { data } = await adminAPI.restaurants.delete({ restaurantId })
-        if (data.status !== 'success') {
-          throw new Error(data.message)
-        }
         const result = await Swal.fire({
           title: '確定要刪除此餐廳?',
           icon: 'warning',
@@ -81,14 +76,16 @@ export default {
           cancelButtonColor: '#d33',
           confirmButtonText: 'Yes, delete it!'
         })
-
         if (result.isConfirmed) {
+          const { data } = await adminAPI.restaurants.delete({ restaurantId })
+          if (data.status !== 'success') {
+            throw new Error(data.message)
+          }
           Swal.fire('Deleted!', '成功刪除此餐廳', 'success')
+          this.restaurants = this.restaurants.filter(
+            restaurant => restaurant.id !== restaurantId
+          )
         }
-
-        this.restaurants = this.restaurants.filter(
-          (restaurant) => restaurant.id !== restaurantId
-        )
       } catch (error) {
         Toast.fire({ icon: 'error', title: '無法刪除餐廳，請稍後再試' })
         console.log('error', error)
