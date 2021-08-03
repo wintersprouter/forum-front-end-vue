@@ -98,6 +98,7 @@
 import AdminNav from '@/components/AdminNav'
 import adminAPI from './../apis/admin'
 import { Toast } from './../utils/helpers'
+import Swal from 'sweetalert2'
 
 export default {
   name: 'AdminCategories',
@@ -152,12 +153,30 @@ export default {
         Toast.fire({ icon: 'error', title: '無法新增餐廳分類資料，請稍後再試' })
       }
     },
-    deleteCategory(categoryId) {
-      //TODO: 透過 API 告知伺服器欲刪除的餐廳類別
-      // 將該餐廳類別從陣列中移除
-      this.categories = this.categories.filter(
-        category => category.id !== categoryId
-      )
+    async deleteCategory(categoryId) {
+      try {
+        const result = await Swal.fire({
+          title: '確定要刪除此分類?',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonColor: '#3085d6',
+          cancelButtonColor: '#d33',
+          confirmButtonText: 'Yes, delete it!'
+        })
+
+        if (result.isConfirmed) {
+          const { data } = await adminAPI.categories.delete({ categoryId })
+          if (data.status !== 'success') {
+            throw new Error(data.message)
+          }
+          Swal.fire('Deleted!', '成功刪除此分類', 'success')
+          this.categories = this.categories.filter(
+            category => category.id !== categoryId
+          )
+        }
+      } catch (error) {
+        Toast.fire({ icon: 'error', title: '無法刪除餐廳分類資料，請稍後再試' })
+      }
     },
     toggleIsEditing(categoryId) {
       this.categories = this.categories.map(category => {
