@@ -5,7 +5,7 @@
         <UserProfileCard
           :initial-is-followed="isFollowed"
           :user="user"
-          :is-current="isCurrentUser"
+          :is-current-user="currentUser.id === user.id"
         />
         <div class="row">
           <div class="col-md-4">
@@ -34,6 +34,7 @@ import UserFollowingsCard from './../components/UserFollowingsCard.vue'
 import UserProfileCard from './../components/UserProfileCard.vue'
 import usersAPI from './../apis/users'
 import { Toast } from './../utils/helpers'
+import { mapState } from 'vuex'
 
 export default {
   name: 'User',
@@ -60,8 +61,7 @@ export default {
       comments: [],
       favoritedRestaurants: [],
       followers: [],
-      followings: [],
-      isCurrentUser: false
+      followings: []
     }
   },
   created() {
@@ -73,6 +73,7 @@ export default {
     this.fetchUser(id)
     next()
   },
+  computed: { ...mapState(['currentUser']) },
   methods: {
     async fetchUser(userId) {
       try {
@@ -90,6 +91,7 @@ export default {
           Followings
         } = profile
         this.user = {
+          ...this.user,
           id,
           name,
           email,
