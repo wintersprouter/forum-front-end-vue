@@ -29,7 +29,6 @@
             class="btn btn-link"
             >Edit</router-link
           >
-
           <button
             type="button"
             class="btn btn-link"
@@ -87,7 +86,7 @@ export default {
         }
 
         this.restaurants = this.restaurants.filter(
-          (restaurant) => restaurant.id !== restaurantId
+          restaurant => restaurant.id !== restaurantId
         )
       } catch (error) {
         Toast.fire({ icon: 'error', title: '無法刪除餐廳，請稍後再試' })
