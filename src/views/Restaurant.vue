@@ -21,17 +21,8 @@ import RestaurantComments from './../components/RestaurantComments.vue'
 import CreateComment from './../components/CreateComment.vue'
 import restaurantsAPI from './../apis/restaurants'
 import { Toast } from './../utils/helpers'
+import { mapState } from 'vuex'
 
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: '管理者',
-    email: 'root@example.com',
-    image: 'https://i.pravatar.cc/300',
-    isAdmin: true
-  },
-  isAuthenticated: true
-}
 export default {
   name: 'Restaurant',
   components: {
@@ -53,7 +44,6 @@ export default {
         isFavorited: false,
         isLiked: false
       },
-      currentUser: dummyUser.currentUser,
       restaurantComments: []
     }
   },
@@ -66,6 +56,8 @@ export default {
     this.fetchRestaurant(id)
     next()
   },
+  computed: { ...mapState(['currentUser']) },
+
   methods: {
     async fetchRestaurant(restaurantId) {
       try {
@@ -96,7 +88,6 @@ export default {
           isLiked
         }
         this.restaurantComments = Comments
-        this.currentUser = dummyUser.currentUser
       } catch (error) {
         Toast.fire({ icon: 'error', title: '無法取得餐廳資料，請稍後再試' })
       }
@@ -104,7 +95,7 @@ export default {
     afterDeleteComment(commentId) {
       // 以 filter 保留未被選擇的 comment.id
       this.restaurantComments = this.restaurantComments.filter(
-        (comment) => comment.id !== commentId
+        comment => comment.id !== commentId
       )
     },
     afterCreateComment(payload) {

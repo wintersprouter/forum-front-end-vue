@@ -81,18 +81,7 @@ export default {
   props: {
     initialRestaurant: {
       type: Object,
-      default: () => ({
-        id: -1,
-        name: '',
-        categoryName: '',
-        image: '',
-        openingHours: '',
-        tel: '',
-        address: '',
-        description: '',
-        isFavorited: false,
-        isLiked: false
-      })
+      require: true
     }
   },
   data() {
