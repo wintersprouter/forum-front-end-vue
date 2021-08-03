@@ -2,7 +2,7 @@
   <div class="row">
     <div class="col-md-12 mb-3">
       <h1>{{ restaurant.name }}</h1>
-      <p class="badge badge-secondary mt-1 mb-3">
+      <p class="badge rounded-pill bg-secondary mt-1 mb-3">
         {{ restaurant.categoryName }}
       </p>
     </div>

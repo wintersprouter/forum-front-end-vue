@@ -62,7 +62,6 @@ export default {
     async fetchRestaurant(restaurantId) {
       try {
         const { data } = await restaurantsAPI.getDetail({ restaurantId })
-        console.log('data', data)
         const { restaurant, isFavorited, isLiked } = data
         const {
           id,
