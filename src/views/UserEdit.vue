@@ -11,18 +11,18 @@
           class="form-control"
           placeholder="Enter Name"
           required
-        >
+        />
       </div>
 
       <div class="form-group">
         <label for="image">Image</label>
         <img
-        v-if="image"
-        :src="image"
-        class="d-block img-thumbnail mb-3"
-        width="200"
-        height="200"
-        >
+          v-if="image"
+          :src="image"
+          class="d-block img-thumbnail mb-3"
+          width="200"
+          height="200"
+        />
         <input
           id="image"
           type="file"
@@ -30,45 +30,64 @@
           accept="image/*"
           class="form-control-file"
           @change="handleFileChange"
-        >
+        />
       </div>
 
-      <button
-        type="submit"
-        class="btn btn-primary"
-      >
-        Submit
+      <button type="submit" class="btn btn-primary" :disabled="isProcessing">
+        {{ isProcessing ? '資料更新中...' : 'Submit' }}
       </button>
     </form>
   </div>
 </template>
 
 <script>
-const dummyData = {
-  id: 1,
-  name: '管理者',
-  image: 'https://i.pravatar.cc/300'
-}
+import usersAPI from './../apis/users'
+import { Toast } from './../utils/helpers'
+
+import { mapState } from 'vuex'
+
 export default {
-  data () {
+  data() {
     return {
       id: -1,
       name: '',
-      image: ''
+      image: '',
+      isProcessing: false
     }
   },
-  methods: {
-    fetchUser (userId) {
-      console.log('userId',userId)
-      const { id,name,image } = dummyData
+  computed: { ...mapState(['currentUser']) },
+  watch: {
+    currentUser() {
+      this.setUser()
+    }
+  },
 
+  created() {
+    const { id } = this.$route.params
+    if (id.toString() !== this.currentUser.id.toString()) {
+      this.$router.push({ name: 'not-found' })
+      return
+    }
+  },
+  beforeRouteUpdate(to, from, next) {
+    const { id } = to.params
+    if (id.toString() !== this.currentUser.id.toString()) {
+      this.$router.push({ name: 'not-found' })
+      return
+    }
+    this.setUser()
+    next()
+  },
+  methods: {
+    setUser() {
+      const { id, image, name } = this.currentUser
       this.id = id
       this.name = name
       this.image = image
     },
-    handleFileChange (e) {
+    handleFileChange(e) {
       const { files } = e.target
-      if (files.length === 0) {
+      if (!files.length) {
         this.image = ''
         return
       } else {
@@ -76,18 +95,28 @@ export default {
         this.image = imageURL
       }
     },
-    handleSubmit (e) {
-      const form = e.target 
-      const formData = new FormData(form)
-      // TODO 透過 API 將表單資料送到伺服器
-      for (let [name, value] of formData.entries()) {
-        console.log(name + ': ' + value)
+    async handleSubmit(e) {
+      try {
+        if (!this.name) {
+          Toast.fire({ icon: 'warning', title: '請填入姓名' })
+          return
+        }
+        this.isProcessing = true
+        const form = e.target
+        const formData = new FormData(form)
+        const { data } = await usersAPI.update({ userId: this.id, formData })
+
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+        this.$router.push({ name: 'user', params: { id: this.id } })
+
+        Toast.fire({ icon: 'success', title: '成功更新使用者個人資料' })
+      } catch (error) {
+        this.isProcessing = false
+        Toast.fire({ icon: 'error', title: '無法更新使用者資料，請稍後再試' })
       }
-    }  
-  },
-  created () {
-    const { id } = this.$route.params
-    this.fetchUser(id)
+    }
   }
 }
 </script>
