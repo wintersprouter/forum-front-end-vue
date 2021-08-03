@@ -2,22 +2,16 @@
   <form @submit.stop.prevent="handleSubmit">
     <div class="form-group mb-4">
       <label for="text">留下評論：</label>
-      <textarea
-        v-model="text"
-        class="form-control"
-        rows="3"
-        name="text"
-      />
+      <textarea v-model="text" class="form-control" rows="3" name="text" />
     </div>
     <div class="d-flex align-items-center justify-content-between">
-      <button
-        type="button"
-        class="btn btn-link"
-        @click="$router.back()"
-      >回上一頁</button>
+      <button type="button" class="btn btn-link" @click="$router.back()">
+        回上一頁
+      </button>
       <button
         type="submit"
         class="btn btn-primary mr-0"
+        :disabled="isProcessing"
       >
         Submit
       </button>
@@ -25,10 +19,11 @@
   </form>
 </template>
 <script>
-import { v4 as uuidv4 } from "uuid"
+import { Toast } from './../utils/helpers'
+import usersAPI from './../apis/users'
 
 export default {
-  name:"CreateComment",
+  name: 'CreateComment',
   props: {
     restaurantId: {
       type: Number,
@@ -37,20 +32,46 @@ export default {
   },
   data() {
     return {
-      text:''
+      text: '',
+      isProcessing: false
     }
-
   },
+
   methods: {
-    handleSubmit () {
-      // TODO: 向 API 發送 POST 請求
-      // 伺服器新增 Comment 成功後...
-      this.$emit('after-create-comment', {
-        commentId: uuidv4(), // 尚未串接 API 暫時使用隨機的 id
-        restaurantId: this.restaurantId,
-        text: this.text
-      })
-      this.text = '' // 將表單內的資料清空
+    async handleSubmit() {
+      try {
+        if (!this.text) {
+          Toast.fire({ icon: 'warning', title: '您尚未填寫任何評論' })
+          return
+        }
+        this.isProcessing = true
+
+        const { data } = await usersAPI.createComment({
+          restaurantId: this.restaurantId,
+          text: this.text
+        })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
+        }
+
+        // 伺服器新增 Comment 成功後...
+        this.$emit('after-create-comment', {
+          commentId: data.commentId,
+          restaurantId: this.restaurantId,
+          text: this.text
+        })
+        this.isProcessing = false
+        this.text = '' // 將表單內的資料清空
+
+        Toast.fire({ icon: 'success', title: '新增餐廳評論資料成功' })
+      } catch (error) {
+        this.isProcessing = false
+        Toast.fire({
+          icon: 'error',
+          title: '無法新增評論，請稍後再試'
+        })
+        console.log('error', error)
+      }
     }
   }
 }
