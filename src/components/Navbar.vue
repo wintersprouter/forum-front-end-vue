@@ -21,7 +21,7 @@
         <!-- is user is admin -->
         <router-link
           v-if="currentUser.isAdmin"
-          :to="'/admin'"
+          to="/admin/restaurants"
           class="text-white mr-3"
         >
           管理員後台
@@ -38,6 +38,7 @@
           <button
             type="button"
             class="btn btn-sm btn-outline-success my-2 my-sm-0"
+            @click="logout"
           >
             登出
           </button>
@@ -49,8 +50,15 @@
 
 <script>
 import { mapState } from 'vuex'
-
 export default {
-  computed: { ...mapState(['currentUser', 'isAuthenticated']) }
+  computed: {
+    ...mapState(['currentUser', 'isAuthenticated'])
+  },
+  methods: {
+    logout() {
+      this.$store.commit('revokeAuthentication')
+      this.$router.push('/signin')
+    }
+  }
 }
 </script>
