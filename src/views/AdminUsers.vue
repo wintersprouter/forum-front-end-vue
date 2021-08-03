@@ -1,7 +1,7 @@
 <template>
   <div class="container py-5">
     <!-- AdminNav Component -->
-    <AdminNav/>
+    <AdminNav />
     <table class="table">
       <thead class="thead-dark">
         <tr>
@@ -14,35 +14,31 @@
           <th scope="col">
             Role
           </th>
-          <th
-            scope="col"
-            width="140"
-          >
+          <th scope="col" width="140">
             Action
           </th>
         </tr>
       </thead>
       <tbody>
-
-        <tr v-for="user in users"
-        :key="user.id">
+        <tr v-for="user in users" :key="user.id">
           <th scope="row">
-          {{user.id}}
+            {{ user.id }}
           </th>
-          <td>{{user.email}}</td>
-          <td>{{user.isAdmin ? 'admin' : 'user'}}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.isAdmin ? 'admin' : 'user' }}</td>
           <td>
             <button
               v-if="currentUser.id !== user.id"
               type="button"
               class="btn btn-link"
-              @click.stop.prevent="toggleIsAdmin({userId:user.id})"
+              @click.stop.prevent="
+                toggleIsAdmin({ userId: user.id, isAdmin: user.isAdmin })
+              "
             >
               {{ user.isAdmin ? 'set as user' : 'set as admin' }}
             </button>
           </td>
         </tr>
-        
       </tbody>
     </table>
   </div>
@@ -50,105 +46,60 @@
 
 <script>
 import AdminNav from '@/components/AdminNav'
-const dummyData = {
-    "users": [
-        {
-            "id": 1,
-            "name": "root123",
-            "email": "root@example.com",
-            "password": "$2a$10$K2x6pQHkzPEKzw86x8Tc0.bfW7QVdA2Ls4AXBFkFu7xHG3UgA4Mli",
-            "isAdmin": true,
-            "image": "https://i.imgur.com/pU2mGov.png",
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-15T09:17:49.000Z"
-        },
-        {
-            "id": 2,
-            "name": "user1",
-            "email": "user1@example.com",
-            "password": "$2a$10$knlgkc6iz7TSC1RADrSjmukYkaQgIc8JSVp1ltz614/F9SK.h/pqa",
-            "isAdmin": false,
-            "image": null,
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T09:58:39.000Z"
-        },
-        {
-            "id": 3,
-            "name": "user2",
-            "email": "user2@example.com",
-            "password": "$2a$10$1UaQ5KZLbMCJztUGRWP/uOtIaKel7TQFHIbozRf4LPysvFLu3UOO6",
-            "isAdmin": false,
-            "image": null,
-            "createdAt": "2021-07-05T09:58:39.000Z",
-            "updatedAt": "2021-07-05T09:58:39.000Z"
-        },
-        {
-            "id": 11,
-            "name": "root3",
-            "email": "ryan@gmail.com",
-            "password": "$2a$10$RlVjZ25mKa8aULENpsmZK.OBFxGUjicjsv2FVnmOXkdtn.yW14oRu",
-            "isAdmin": false,
-            "image": null,
-            "createdAt": "2021-07-05T10:20:05.000Z",
-            "updatedAt": "2021-07-05T10:32:11.000Z"
-        },
-        {
-            "id": 21,
-            "name": "hans",
-            "email": "hans@yahoo.com",
-            "password": "$2a$10$x1t6Xd/2gpTd2VjJHGoBd.NsmIZhv57MvwjMBVsB67qFh0ueCa2ja",
-            "isAdmin": false,
-            "image": null,
-            "createdAt": "2021-07-16T03:24:28.000Z",
-            "updatedAt": "2021-07-16T03:24:28.000Z"
-        }
-    ]
-}
-const dummyUser = {
-  currentUser: {
-    id: 1,
-    name: '管理者',
-    email: 'root@example.com',
-    image: 'https://i.pravatar.cc/300',
-    isAdmin: true
-  },
-  isAuthenticated: true
-}
+import adminAPI from './../apis/admin'
+import { Toast } from './../utils/helpers'
+import { mapState } from 'vuex'
+
 export default {
-  name:"AdminUsers",
+  name: 'AdminUsers',
   components: {
     AdminNav
   },
-  data () {
+  data() {
     return {
-      users:[],
-      currentUser:{}
+      users: []
     }
   },
-  created () {
+  created() {
     this.fetchUsers()
-    this.fetchCurrentUser()
   },
+  computed: { ...mapState(['currentUser']) },
+
   methods: {
-    fetchUsers () {
-      this.users = dummyData.users 
+    async fetchUsers() {
+      try {
+        const { data } = await adminAPI.users.get()
+        this.users = data.users
+      } catch (error) {
+        Toast.fire({ icon: 'error', title: '無法取得使用者資料，請稍後再試' })
+      }
     },
-    fetchCurrentUser () {
-      this.currentUser = dummyUser.currentUser  
-    },
-    toggleIsAdmin({userId}) {
-      this.users = this.users.map(user => {
-        if (user.id === userId) {
-          return {
-            ...user,
-            isAdmin:!user.isAdmin
-          }
+
+    async toggleIsAdmin({ userId, isAdmin }) {
+      try {
+        const willBeAdmin = !isAdmin
+
+        const { data } = await adminAPI.users.update({
+          userId,
+          isAdmin: willBeAdmin.toString()
+        })
+        if (data.status !== 'success') {
+          throw new Error(data.message)
         }
-        return user
-      })
+        this.users = this.users.map(user => {
+          if (user.id === userId) {
+            return {
+              ...user,
+              isAdmin: willBeAdmin
+            }
+          }
+          return user
+        })
+        Toast.fire({ icon: 'success', title: '成功更新使用者個人角色' })
+      } catch (error) {
+        Toast.fire({ icon: 'error', title: '無法更新使用者角色，請稍後再試' })
+      }
     }
   }
-
-
 }
 </script>
