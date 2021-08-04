@@ -1,61 +1,73 @@
 <template>
   <div class="container py-5">
-    <form @submit.stop.prevent="handleSubmit">
-      <div class="form-group">
-        <label for="name">Name</label>
-        <input
-          id="name"
-          v-model="name"
-          type="text"
-          name="name"
-          class="form-control"
-          placeholder="Enter Name"
-          required
-        />
-      </div>
-
-      <div class="form-group">
-        <label for="image">Image</label>
-        <img
-          v-if="image"
-          :src="image"
-          class="d-block img-thumbnail mb-3"
-          width="200"
-          height="200"
-        />
-        <input
-          id="image"
-          type="file"
-          name="image"
-          accept="image/*"
-          class="form-control-file"
-          @change="handleFileChange"
-        />
-      </div>
-
-      <button type="submit" class="btn btn-primary" :disabled="isProcessing">
-        {{ isProcessing ? '資料更新中...' : 'Submit' }}
-      </button>
-    </form>
+    <Spinner v-if="isLoading" />
+    <template v-else>
+      <form @submit.stop.prevent="handleSubmit">
+        <div class="form-group">
+          <label for="name">Name</label>
+          <input
+            id="name"
+            v-model="name"
+            type="text"
+            name="name"
+            class="form-control"
+            placeholder="Enter Name"
+            required
+          />
+        </div>
+        <div class="form-group">
+          <label for="image">Image</label>
+          <img
+            v-if="image"
+            :src="image"
+            class="d-block img-thumbnail mb-3"
+            width="200"
+            height="200"
+          />
+          <input
+            id="image"
+            type="file"
+            name="image"
+            accept="image/*"
+            class="form-control-file"
+            @change="handleFileChange"
+          />
+        </div>
+        <button
+          type="submit"
+          class="btn btn-primary mt-5"
+          :disabled="isProcessing"
+        >
+          {{ isProcessing ? '資料更新中...' : 'Submit' }}
+        </button>
+      </form>
+    </template>
   </div>
 </template>
 
 <script>
 import usersAPI from './../apis/users'
 import { Toast } from './../utils/helpers'
-
 import { mapState } from 'vuex'
+import Spinner from './../components/Spinner'
 
 export default {
+  components: {
+    Spinner
+  },
+
   data() {
     return {
-      id: -1,
+      id: 0,
       name: '',
       image: '',
-      isProcessing: false
+      isProcessing: false,
+      isLoading: true
     }
   },
-  computed: { ...mapState(['currentUser']) },
+  computed: {
+    ...mapState(['currentUser'])
+  },
   watch: {
     currentUser() {
       this.setUser()
@@ -68,6 +80,7 @@ export default {
       this.$router.push({ name: 'not-found' })
       return
     }
+    this.setUser()
   },
   beforeRouteUpdate(to, from, next) {
     const { id } = to.params
@@ -84,6 +97,7 @@ export default {
       this.id = id
       this.name = name
       this.image = image
+      this.isLoading = false
     },
     handleFileChange(e) {
       const { files } = e.target
@@ -110,7 +124,6 @@ export default {
           throw new Error(data.message)
         }
         this.$router.push({ name: 'user', params: { id: this.id } })
-
         Toast.fire({ icon: 'success', title: '成功更新使用者個人資料' })
       } catch (error) {
         this.isProcessing = false
