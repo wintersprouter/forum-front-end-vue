@@ -35,8 +35,10 @@ export default {
       isLoading: true
     }
   },
-  changeLoading() {
-    this.isLoading = false
+  methods: {
+    changeLoading() {
+      this.isLoading = false
+    }
   }
 }
 </script>

@@ -31,9 +31,12 @@ export default {
       isLoading: true
     }
   },
-  changeLoading() {
-    this.isLoading = false
+  methods: {
+    changeLoading() {
+      this.isLoading = false
+    }
   },
+
   props: {
     followings: {
       type: Array,

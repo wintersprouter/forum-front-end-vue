@@ -11,6 +11,7 @@
           class="btn btn-danger float-right"
           v-if="currentUser.isAdmin"
           @click.stop.prevent="handleDeleteButtonClick(comment.id)"
+          :disabled="isProcessing"
         >
           Delete
         </button>
@@ -37,7 +38,11 @@ import { mapState } from 'vuex'
 export default {
   name: 'RestaurantComments',
   mixins: [fromNowFilter],
-
+  data() {
+    return {
+      isProcessing: false
+    }
+  },
   props: {
     restaurantComments: {
       type: Array,
@@ -49,14 +54,19 @@ export default {
   methods: {
     async handleDeleteButtonClick(commentId) {
       try {
+        this.isProcessing = true
+
         const { data } = await usersAPI.deleteComment({ commentId })
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
         // 觸發父層事件 - $emit('事件名稱' , 傳遞的資料 )
         this.$emit('after-delete-comment', commentId)
+        this.isProcessing = false
         Toast.fire({ icon: 'success', title: '移除評論成功' })
       } catch (error) {
+        this.isProcessing = false
+
         Toast.fire({ icon: 'error', title: '無法刪除留言，請稍後再試' })
       }
     }

@@ -40,6 +40,11 @@ export default {
       type: Array,
       default: () => []
     }
+  },
+  methods: {
+    changeLoading() {
+      this.isLoading = false
+    }
   }
 }
 </script>

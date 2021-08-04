@@ -9,7 +9,11 @@
         <router-link
           :to="{ name: 'restaurant', params: { id: restaurant.id } }"
         >
-          <img class="card-img" :src="restaurant.image" @load="changeLoading" />
+          <img
+            class="card-img"
+            :src="restaurant.image | emptyImage"
+            @load="changeLoading"
+          />
         </router-link>
       </div>
       <div class="col-md-7">
@@ -35,6 +39,7 @@
             @click.stop.prevent="deleteFavorite(restaurant.id)"
             type="button"
             class="btn btn-danger mr-2"
+            :disabled="isProcessing"
           >
             移除最愛
           </button>
@@ -43,6 +48,7 @@
             @click.stop.prevent="addFavorite(restaurant.id)"
             type="button"
             class="btn btn-primary mr-2"
+            :disabled="isProcessing"
           >
             加到最愛
           </button>
@@ -55,9 +61,12 @@
 <script>
 import { Toast } from './../utils/helpers'
 import usersAPI from './../apis/users'
+import { emptyImageFilter } from './../utils/mixins'
 
 export default {
   name: 'RestaurantsTopCard.vue',
+  mixins: [emptyImageFilter],
+
   props: {
     initialRestaurant: {
       type: Object,
@@ -67,7 +76,8 @@ export default {
   data() {
     return {
       restaurant: this.initialRestaurant,
-      isLoading: true
+      isLoading: true,
+      isProcessing: false
     }
   },
   methods: {
@@ -77,6 +87,7 @@ export default {
 
     async addFavorite(restaurantId) {
       try {
+        this.isProcessing = true
         const { data } = await usersAPI.addFavorite({ restaurantId })
         if (data.status !== 'success') {
           throw new Error(data.message)
@@ -86,11 +97,13 @@ export default {
           isFavorited: true,
           FavoriteCount: this.restaurant.FavoriteCount + 1
         }
+        this.isProcessing = false
         Toast.fire({
           icon: 'success',
           title: `成功將${this.restaurant.name} 加入最愛`
         })
       } catch (error) {
+        this.isProcessing = false
         Toast.fire({
           icon: 'error',
           title: `無法將  ${this.restaurant.name} 加入最愛，請稍後再試`
@@ -100,6 +113,7 @@ export default {
     },
     async deleteFavorite(restaurantId) {
       try {
+        this.isProcessing = true
         const { data } = await usersAPI.deleteFavorite({ restaurantId })
         if (data.status !== 'success') {
           throw new Error(data.message)
@@ -109,11 +123,14 @@ export default {
           isFavorited: false,
           FavoriteCount: this.restaurant.FavoriteCount - 1
         }
+        this.isProcessing = false
+
         Toast.fire({
           icon: 'success',
           title: `成功將 ${this.restaurant.name} 移除最愛`
         })
       } catch (error) {
+        this.isProcessing = false
         Toast.fire({
           icon: 'error',
           title: `無法將 ${this.restaurant.name} 移除最愛，請稍後再試`

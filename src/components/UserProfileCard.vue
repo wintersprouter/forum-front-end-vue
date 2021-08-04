@@ -44,6 +44,7 @@
               type="button"
               class="btn btn-danger btn-border mr-2"
               @click.stop.prevent="unFollow(user.id)"
+              :disabled="isProcessing"
             >
               取消追蹤
             </button>
@@ -52,6 +53,7 @@
               type="button"
               class="btn btn-primary btn-border mr-2"
               @click.stop.prevent="follow(user.id)"
+              :disabled="isProcessing"
             >
               追蹤
             </button>
@@ -86,7 +88,8 @@ export default {
   data() {
     return {
       isFollowed: this.initialIsFollowed,
-      isLoading: true
+      isLoading: true,
+      isProcessing: false
     }
   },
   watch: {
@@ -104,25 +107,34 @@ export default {
 
     async follow(userId) {
       try {
+        this.isProcessing = true
+
         const { data } = await usersAPI.follow({ userId })
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
         this.isFollowed = true
+        this.isProcessing = false
         Toast.fire({ icon: 'success', title: `成功追蹤 ${this.user.name}` })
       } catch (error) {
+        this.isProcessing = false
+
         Toast.fire({ icon: 'error', title: '無法加入追蹤，請稍後再試' })
       }
     },
     async unFollow(userId) {
       try {
+        this.isProcessing = true
         const { data } = await usersAPI.unFollow({ userId })
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
         this.isFollowed = false
         Toast.fire({ icon: 'success', title: `退追 ${this.user.name} 成功` })
+        this.isProcessing = false
       } catch (error) {
+        this.isProcessing = false
+
         Toast.fire({ icon: 'error', title: '無法移除追蹤，請稍後再試' })
       }
     }

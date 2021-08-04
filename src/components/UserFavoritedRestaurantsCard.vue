@@ -13,8 +13,7 @@
           :src="favoritedRestaurant.image"
           width="60"
           height="60"
-          class="avatar mt-1
-"
+          class="avatar mt-1"
           @load="changeLoading"
         />
       </router-link>
@@ -34,8 +33,10 @@ export default {
   data() {
     return { isLoading: true }
   },
-  changeLoading() {
-    this.isLoading = false
+  methods: {
+    changeLoading() {
+      this.isLoading = false
+    }
   }
 }
 </script>
