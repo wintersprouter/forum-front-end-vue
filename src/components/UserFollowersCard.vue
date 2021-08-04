@@ -10,10 +10,11 @@
         :to="{ name: 'user', params: { id: follower.id } }"
       >
         <img
+          @load="changeLoading"
           :src="follower.image | emptyImage"
           width="60"
           height="60"
-          class="avatar"
+          class="avatar mt-1"
         />
       </router-link>
     </div>
@@ -26,7 +27,14 @@ import { emptyImageFilter } from './../utils/mixins'
 export default {
   name: 'UserFollowersCard',
   mixins: [emptyImageFilter],
-
+  data() {
+    return {
+      isLoading: true
+    }
+  },
+  changeLoading() {
+    this.isLoading = false
+  },
   props: {
     followers: {
       type: Array,
@@ -35,3 +43,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+.avatar {
+  object-fit: cover;
+}
+</style>

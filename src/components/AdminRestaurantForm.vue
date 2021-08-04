@@ -97,7 +97,7 @@
         @change="handleFileChange"
       />
     </div>
-    <button type="submit" class="btn btn-primary" :disabled="isProcessing">
+    <button type="submit" class="btn btn-primary mt-5" :disabled="isProcessing">
       {{ isProcessing ? '處理中...' : '送出' }}
     </button>
   </form>

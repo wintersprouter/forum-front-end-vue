@@ -16,7 +16,7 @@
           <div class="col-auto">
             <button
               type="button"
-              class="btn btn-primary"
+              class="btn btn-primary mt-2"
               @click.stop.prevent="creatCategory"
               :disabled="isProcessing"
             >
@@ -143,6 +143,13 @@ export default {
     },
     async creatCategory() {
       try {
+        if (!this.newCategoryName) {
+          Toast.fire({
+            icon: 'warning',
+            title: '請填入分類名稱'
+          })
+          return
+        }
         this.isProcessing = true
         const { data } = await adminAPI.categories.create({
           name: this.newCategoryName

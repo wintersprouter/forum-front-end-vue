@@ -7,9 +7,16 @@
       <router-link
         v-for="favoritedRestaurant in favoritedRestaurants"
         :key="favoritedRestaurant.id"
-        :to="{name: 'restaurant', params: { id: favoritedRestaurant.id }}"
+        :to="{ name: 'restaurant', params: { id: favoritedRestaurant.id } }"
       >
-        <img :src="favoritedRestaurant.image"  width="60" height="60" class="avatar">
+        <img
+          :src="favoritedRestaurant.image"
+          width="60"
+          height="60"
+          class="avatar mt-1
+"
+          @load="changeLoading"
+        />
       </router-link>
     </div>
   </div>
@@ -17,12 +24,23 @@
 
 <script>
 export default {
-  name:"UserFavoritedRestaurantsCard",
+  name: 'UserFavoritedRestaurantsCard',
   props: {
     favoritedRestaurants: {
       type: Array,
       default: () => []
     }
   },
+  data() {
+    return { isLoading: true }
+  },
+  changeLoading() {
+    this.isLoading = false
+  }
 }
 </script>
+<style scoped>
+.avatar {
+  object-fit: cover;
+}
+</style>

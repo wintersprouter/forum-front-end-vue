@@ -4,11 +4,11 @@
       <div class="col-md-4">
         <img
           :src="user.image | emptyImage"
+          @load="changeLoading"
           alt="Card image cap"
           width="300px"
           height="300px"
-          class="card-img-top
-"
+          class="card-img-top"
         />
       </div>
       <div class="col-md-8">
@@ -85,7 +85,8 @@ export default {
   },
   data() {
     return {
-      isFollowed: this.initialIsFollowed
+      isFollowed: this.initialIsFollowed,
+      isLoading: true
     }
   },
   watch: {
@@ -97,6 +98,10 @@ export default {
     }
   },
   methods: {
+    changeLoading() {
+      this.isLoading = false
+    },
+
     async follow(userId) {
       try {
         const { data } = await usersAPI.follow({ userId })

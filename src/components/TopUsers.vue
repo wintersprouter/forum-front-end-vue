@@ -1,7 +1,13 @@
 <template>
   <div class="col-3">
     <router-link :to="{ name: 'user', params: { id: user.id } }">
-      <img :src="user.image" :alt="user.name" width="140px" height="140px" />
+      <img
+        :src="user.image | emptyImage"
+        :alt="user.name"
+        width="140px"
+        height="140px"
+        class="avatar my-2"
+      />
     </router-link>
     <h2>{{ user.name }}</h2>
     <span class="badge rounded-pill bg-secondary"
@@ -30,8 +36,11 @@
 <script>
 import usersAPI from './../apis/users'
 import { Toast } from './../utils/helpers'
+import { emptyImageFilter } from './../utils/mixins'
 
 export default {
+  mixins: [emptyImageFilter],
+
   props: {
     initialUser: {
       type: Object,
@@ -80,3 +89,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+.avatar {
+  object-fit: cover;
+}
+</style>

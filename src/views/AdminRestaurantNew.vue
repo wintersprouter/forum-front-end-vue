@@ -37,7 +37,7 @@ export default {
         this.$router.push({ name: 'admin-restaurants' })
         Toast.fire({
           icon: 'success',
-          title: `成功新增 ${data.restaurant.name} 餐廳`
+          title: `成功新增餐廳`
         })
       } catch (error) {
         this.isProcessing = false

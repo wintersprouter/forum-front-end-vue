@@ -1,12 +1,18 @@
 <template>
-  <div class="card mb-3" style="max-width: 540px;margin: auto;">
+  <div
+    v-show="!isLoading"
+    class="card mb-3"
+    style="max-width: 540px;margin: auto;"
+  >
     <div class="row no-gutters">
-      <div class="col-md-4">
-        <router-link :to="{ name: 'restaurant', params: { id: restaurant.id }}">
-          <img class="card-img" :src="restaurant.image" />
+      <div class="col-md-5">
+        <router-link
+          :to="{ name: 'restaurant', params: { id: restaurant.id } }"
+        >
+          <img class="card-img" :src="restaurant.image" @load="changeLoading" />
         </router-link>
       </div>
-      <div class="col-md-8">
+      <div class="col-md-7">
         <div class="card-body">
           <h5 class="card-title">
             {{ restaurant.name }}
@@ -18,7 +24,7 @@
             {{ restaurant.description }}
           </p>
           <router-link
-            :to="{ name: 'restaurant', params: { id: restaurant.id }}"
+            :to="{ name: 'restaurant', params: { id: restaurant.id } }"
             class="btn btn-primary mr-2"
           >
             Show</router-link
@@ -36,7 +42,7 @@
             v-else
             @click.stop.prevent="addFavorite(restaurant.id)"
             type="button"
-            class="btn btn-primary"
+            class="btn btn-primary mr-2"
           >
             加到最愛
           </button>
@@ -47,42 +53,52 @@
 </template>
 
 <script>
-import { Toast } from'./../utils/helpers'
+import { Toast } from './../utils/helpers'
 import usersAPI from './../apis/users'
 
-
 export default {
-  name:"RestaurantsTopCard.vue",
+  name: 'RestaurantsTopCard.vue',
   props: {
     initialRestaurant: {
       type: Object,
       required: true
     }
   },
-  data () {
+  data() {
     return {
-      restaurant: this.initialRestaurant
+      restaurant: this.initialRestaurant,
+      isLoading: true
     }
   },
   methods: {
+    changeLoading() {
+      this.isLoading = false
+    },
+
     async addFavorite(restaurantId) {
       try {
-        const { data } = await usersAPI.addFavorite({restaurantId})
+        const { data } = await usersAPI.addFavorite({ restaurantId })
         if (data.status !== 'success') {
           throw new Error(data.message)
         }
         this.restaurant = {
           ...this.restaurant,
-          isFavorited: true ,
+          isFavorited: true,
           FavoriteCount: this.restaurant.FavoriteCount + 1
         }
-        Toast.fire({ icon: 'success', title:`成功將${this.restaurant.name} 加入最愛` })
+        Toast.fire({
+          icon: 'success',
+          title: `成功將${this.restaurant.name} 加入最愛`
+        })
       } catch (error) {
-        Toast.fire({ icon: 'error', title:`無法將  ${this.restaurant.name} 加入最愛，請稍後再試` })
+        Toast.fire({
+          icon: 'error',
+          title: `無法將  ${this.restaurant.name} 加入最愛，請稍後再試`
+        })
         console.log('error', error)
       }
     },
-    async deleteFavorite (restaurantId) {
+    async deleteFavorite(restaurantId) {
       try {
         const { data } = await usersAPI.deleteFavorite({ restaurantId })
         if (data.status !== 'success') {
@@ -93,13 +109,25 @@ export default {
           isFavorited: false,
           FavoriteCount: this.restaurant.FavoriteCount - 1
         }
-        Toast.fire({ icon: 'success', title:`成功將 ${this.restaurant.name} 移除最愛`})
+        Toast.fire({
+          icon: 'success',
+          title: `成功將 ${this.restaurant.name} 移除最愛`
+        })
       } catch (error) {
-        Toast.fire({ icon: 'error', title:`無法將 ${this.restaurant.name} 移除最愛，請稍後再試` })
+        Toast.fire({
+          icon: 'error',
+          title: `無法將 ${this.restaurant.name} 移除最愛，請稍後再試`
+        })
 
         console.log('error', error)
       }
-    },
+    }
   }
 }
 </script>
+<style scoped>
+.card-img {
+  height: 100%;
+  object-fit: cover;
+}
+</style>
