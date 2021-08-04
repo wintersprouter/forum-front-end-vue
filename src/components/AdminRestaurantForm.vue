@@ -1,5 +1,6 @@
 <template>
-  <form v-show="!isLoading" @submit.stop.prevent="handleSubmit">
+  <Spinner v-if="isLoading" />
+  <form v-else @submit.stop.prevent="handleSubmit">
     <div class="form-group">
       <label for="name">Name</label>
       <input
@@ -12,7 +13,6 @@
         required
       />
     </div>
-
     <div class="form-group">
       <label for="categoryId">Category</label>
       <select
@@ -106,9 +106,12 @@
 // STEP 1: 匯入 adminAPI 和錯誤提示用的
 import adminAPI from './../apis/admin'
 import { Toast } from './../utils/helpers'
+import Spinner from './Spinner'
 
 export default {
   name: 'AdminRestaurantForm',
+  components: { Spinner },
+
   data() {
     return {
       categories: [],
