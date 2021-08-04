@@ -1,9 +1,9 @@
 <template>
   <div class="container py-5">
+    <!-- AdminNav Component -->
+    <AdminNav />
     <Spinner v-if="isLoading" />
     <template v-else>
-      <!-- AdminNav Component -->
-      <AdminNav />
       <table class="table">
         <thead class="thead-dark">
           <tr>
